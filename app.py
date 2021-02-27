@@ -39,9 +39,45 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
 
 
-@app.route('/')
+@app.route("/")
 def home():
-    return render_template('home.html')
+    if not session.get('user_id'):
+        return render_template("home.html")
+    else:
+        user_name = Users.query.filter_by(id=session['user_id']).first().user_name
+        is_admin = Users.query.filter_by(id=session['user_id']).first().is_admin
+        return render_template("home.html", user_name=user_name, is_admin=is_admin)
+
+
+@app.route('/admin/contests')
+@login_required
+def admin():
+    g.user = current_user.get_id()
+    if g.user:
+        user_id = int(g.user)
+        user = Users.query.get(user_id)
+        if user.is_admin:
+            contest_id = request.args.get("c")
+            action = request.args.get("a")
+            if contest_id:
+                contests = Contests.query.filter_by(contest_id=int(contest_id)).first()
+                posted_by = contests.posted_by
+                unique_id = Users.query.filter_by(user_name=posted_by).first().unique_id
+                dashboard = UsersDashboard.query.filter_by(unique_id=unique_id).first()
+                if action == "approve":
+                    dashboard.points += 10
+                    dashboard.contest_posted += 1
+                    contests.approved = 1
+                elif action == "cancel":
+                    dashboard.points -= 5
+                    dashboard.contest_posted += 1
+                    contests.cancelled = 1
+                db.session.add_all([contests, dashboard])
+                db.session.commit()
+            contests = Contests.query.all()
+            return render_template("admin.html", contests=contests)
+        else:
+            abort(403)
 
 
 @app.route('/contest/<category>')

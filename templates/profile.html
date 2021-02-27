@@ -19,14 +19,12 @@
     <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- Bootstrap CSS -->
-{#    <link#}
-{#            rel="stylesheet"#}
-{#            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"#}
-{#            integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"#}
-{#            crossorigin="anonymous"#}
-{#    />#}
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+            integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+            crossorigin="anonymous"
+    />
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename="css/styles.css") }}"/>
@@ -122,6 +120,10 @@
 
                                     <div style="background-color: #fff;" class="dropdown-menu"
                                          aria-labelledby="dropdown01">
+                                        {% if is_admin %}
+                                            <a style="width: 150px;" class="dropdown-item user-dropdown"
+                                           href="{{ url_for('admin') }}">Admin</a>
+                                        {% endif %}
                                         <a style="width: 150px;" class="dropdown-item user-dropdown"
                                            href="{{ url_for('profile', user_name=user_name) }}">Profile</a>
                                         <a style="width: 150px;" class="dropdown-item user-dropdown"
@@ -158,6 +160,7 @@
         <div class="col-md-10 pl-md-5">
             <div class="profile-head">
                 <h2>User Profile</h2>
+                <p class="profile-rating"><strong>Points</strong> : <span>{{ points }}</span></p>
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
                         <a
@@ -294,8 +297,10 @@
                             <td>{{ contest.contest_name }}</td>
                             {% if contest.approved %}
                                 <td>Approved</td>
-                            {% else %}
+                            {% elif contest.cancelled %}
                                 <td>Not Approved</td>
+                            {% else %}
+                                <td>Awaiting Approval</td>
                             {% endif %}
                             <td>
                                 <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"

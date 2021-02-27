@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8"/>
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <title>Orders</title>
+
+    <!-- Google Fonts -->
+
+    <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap"
+            rel="stylesheet"
+    />
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}">
+
+    <!-- Bootstrap CSS -->
+    <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+            integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+            crossorigin="anonymous"
+    />
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename="css/styles.css") }}"/>
+
+    <!-- Fontawesome CDN -->
+    <script
+            src="https://kit.fontawesome.com/c622614d7c.js"
+            crossorigin="anonymous"
+    ></script>
+</head>
+
+<body>
+<div class="py-3">
+    <h4 class="h3">Pending approval</h4>
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Contest ID</th>
+            <th scope="col">Contest name</th>
+            <th scope="col">Contest URL</th>
+            <th scope="col">Start</th>
+            <th scope="col">End</th>
+            <th scope="col">Hosted by</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if contests != None %}
+            {% for contest in contests %}
+                {% if not contest.approved and not contest.cancelled %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ contest.contest_id }}</td>
+                        <td>{{ contest.contest_name }}</td>
+                        <td><a href="{{ contest.contest_url }}" target="_blank">Here</a></td>
+                        <td>{{ contest.start_date_time }}</td>
+                        <td>{{ contest.end_date_time }}</td>
+                        <td>{{ contest.posted_by }}</td>
+                        <td>
+                            <a style="color: rgb(7, 221, 7); text-decoration: none;"
+                               href="{{ url_for('admin', c=contest.contest_id, a="approve") }}"><i style="color: rgb(7, 221, 7);"
+                                                                                      class="fas fa-check-circle"></i>Approve</a>
+
+                        </td>
+                        <td>
+                            <a style="color: red; text-decoration: none;"
+                               href="{{ url_for('admin', c=contest.contest_id, a="cancel") }}"><i style="color: red;"
+                                                                                      class="fas fa-check-circle"></i>Cancel</a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+<br/>
+
+<div class="py-3">
+    <h4 class="h3">Approved Contests</h4>
+
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Contest ID</th>
+            <th scope="col">Contest name</th>
+            <th scope="col">Contest URL</th>
+            <th scope="col">Start</th>
+            <th scope="col">End</th>
+            <th scope="col">Hosted by</th>
+            <th scope="col">Hosted on</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if contests != None %}
+            {% for contest in contests %}
+                {% if contest.approved %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ contest.contest_id }}</td>
+                        <td>{{ contest.contest_name }}</td>
+                        <td><a href="{{ contest.contest_url }}">Here</a></td>
+                        <td>{{ contest.start_date_time }}</td>
+                        <td>{{ contest.end_date_time }}</td>
+                        <td>{{ contest.posted_by }}</td>
+                        <td>{{ contest.hosted_on }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<div class="py-3">
+    <h4 class="h3">Cancelled Contests</h4>
+
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Contest ID</th>
+            <th scope="col">Contest name</th>
+            <th scope="col">Contest URL</th>
+            <th scope="col">Start</th>
+            <th scope="col">End</th>
+            <th scope="col">Hosted by</th>
+            <th scope="col">Hosted on</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if contests != None %}
+            {% for contest in contests %}
+                {% if contest.cancelled %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ contest.contest_id }}</td>
+                        <td>{{ contest.contest_name }}</td>
+                        <td><a href="{{ contest.contest_url }}">Here</a></td>
+                        <td>{{ contest.start_date_time }}</td>
+                        <td>{{ contest.end_date_time }}</td>
+                        <td>{{ contest.posted_by }}</td>
+                        <td>{{ contest.hosted_on }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+<script
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"
+></script>
+<script
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"
+></script>
+<script
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"
+></script>
+</body>
+</html>

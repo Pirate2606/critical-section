@@ -16,14 +16,13 @@
     />
     <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}">
     <!-- Bootstrap CSS -->
-{#    <link#}
-{#            rel="stylesheet"#}
-{#            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"#}
-{#            integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"#}
-{#            crossorigin="anonymous"#}
-{#    />#}
+    <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+            integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+            crossorigin="anonymous"
+    />
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"/>
@@ -42,7 +41,7 @@
             style="background-color: #1d1919"
             class="navbar navbar-expand-md navbar-dark"
     >
-        <a class="navbar-brand mx-md-5 px-md-5 pt-2" href="#">
+        <a class="navbar-brand mx-md-5 px-md-5 pt-2" href="/">
             <img width="60px" src="{{ url_for('static', filename='images/logo.png') }}" alt=""/>
             <img
                     class="ml-md-2"
@@ -120,8 +119,12 @@
 
                                     <div style="background-color: #fff;" class="dropdown-menu"
                                          aria-labelledby="dropdown01">
+                                        {% if is_admin %}
+                                            <a style="width: 150px;" class="dropdown-item user-dropdown"
+                                           href="{{ url_for('admin') }}">Admin</a>
+                                        {% endif %}
                                         <a style="width: 150px;" class="dropdown-item user-dropdown"
-                                           href="">Profile</a>
+                                           href="{{ url_for('profile', user_name=user_name) }}">Profile</a>
                                         <a style="width: 150px;" class="dropdown-item user-dropdown"
                                            href="{{ url_for('logout') }}">Log out</a>
                                     </div>
@@ -196,10 +199,9 @@
                             <h6 class="mb-3 mb-lg-4 bold-text "><b>MENU</b></h6>
                             <ul class="list-unstyled">
                                 <li><a href="{{ url_for('home') }}" style="text-decoration: none; color: white;">Home</a></li>
-                                <li><a href="" style="text-decoration: none; color: white;">Contests</a></li>
-                                <li><a href="" style="text-decoration: none; color: white;">Contact</a></li>
-                                <li><a href="" style="text-decoration: none; color: white;">Privacy Policy</a></li>
-                                <li><a href="" style="text-decoration: none; color: white;">Terms & conditions</a></li>
+                                <li><a href="{{ url_for('contest', category="ongoing") }}" style="text-decoration: none; color: white;">Contests</a></li>
+                                <li><a href="{{ url_for('contact_us') }}" style="text-decoration: none; color: white;">Contact</a></li>
+                                <li><a href="{{ url_for('about_us') }}" style="text-decoration: none; color: white;">About us</a></li>
                             </ul>
                         </div>
                         <div class="col-lg-2 col-md-4 col-sm-4 col-12">
