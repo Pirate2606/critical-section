@@ -152,6 +152,58 @@ def previous():
     return {"success": True}
 
 
+@app.route('/user/<user_name>', methods=["GET", "POST"])
+@login_required
+def profile(user_name):
+    if user_name != Users.query.filter_by(id=session['user_id']).first().user_name:
+        abort(403)
+    user = Users.query.filter_by(user_name=user_name).first()
+    register = Register.query.filter_by(unique_id=user.unique_id).first()
+    contests = Contests.query.filter_by(posted_by=user_name).all()
+    points = UsersDashboard.query.filter_by(unique_id=user.unique_id).first().points
+    date = []
+    for con in contests:
+        posted_on = con.posted_on
+        post_date = posted_on.strftime("%d-%m-%Y")
+        time = posted_on.strftime("%H:%M:%S")
+        date_time = post_date + " | " + time
+        start_date = con.start_date_time.split("T")[0]
+        start_time = con.start_date_time.split("T")[1]
+        start_date_time = start_date + " | " + start_time
+        end_date = con.end_date_time.split("T")[0]
+        end_time = con.end_date_time.split("T")[1]
+        end_date_time = end_date + " | " + end_time
+        date.append([date_time, start_date_time, end_date_time])
+    if request.method == "POST":
+        file = request.files['new_profile_pic']
+        if 'new_profile_pic' in request.files and allowed_file(file.filename):
+            image_filename = photos.save(file)
+            static = os.path.join(os.path.curdir, "static")
+            pictures = os.path.join(static, "pictures")
+            image_location = os.path.join(pictures, image_filename)
+            with open(image_location, "rb") as file:
+                url = "https://api.imgbb.com/1/upload"
+                payload = {
+                    "key": '00a33d9bbaa2f24bf801c871894e91d4',
+                    "image": base64.b64encode(file.read()),
+                }
+                res = requests.post(url, payload)
+                str_name = ""
+                for r in res:
+                    str_name += r.decode("utf8")
+                register.profile_pic = json.loads(str_name)['data']['url']
+                db.session.commit()
+    user_name = Users.query.filter_by(id=session['user_id']).first().user_name
+    is_admin = Users.query.filter_by(id=session['user_id']).first().is_admin
+    return render_template("profile.html",
+                           register=register,
+                           user_name=user_name,
+                           contests=contests,
+                           date=date,
+                           is_admin=is_admin,
+                           points=points)
+
+
 @app.route("/check_login")
 @login_required
 def check_login():
