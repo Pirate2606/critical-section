@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="get-in-touch p-2">
+    <h1 class="title">contest details</h1>
+    <form class="contact-form row" method="POST" enctype="multipart/form-data">
+        <div class="form-field col-lg-6">
+            <label class="label pb-3" for="name">Name of the contest *</label>
+            <input id="name" name="name" class="input-text js-input" type="text" required autocomplete="off"/>
+        </div>
+        <div class="form-field col-lg-6">
+            <label class="label pb-3" for="url">URL *</label>
+            <input id="url" name="url" class="input-text js-input" type="text" required autocomplete="off"/>
+        </div>
+        <div class="form-field col-lg-6">
+            <label class="label pb-3" for="hosted">Hosting Website *</label>
+            <input id="hosted" name="hosted" class="input-text js-input" type="text" required autocomplete="off"/>
+        </div>
+
+        <div class="form-field col-lg-6">
+            <label class="label pb-3" for="exampleInputEmail1">Start Date *</label>
+            <input
+                type="datetime-local"
+                name="start"
+                id="name"
+                class="input-text js-input"
+                required
+            />
+        </div>
+
+        <div class="form-field col-lg-6">
+            <label class="label pb-3" for="exampleInputEmail1">End Date *</label>
+            <input
+                type="datetime-local"
+                name="end"
+                id="name"
+                class="input-text js-input"
+                required
+            />
+        </div>
+
+        <div class="form-field col-lg-6 datalist-stuff">
+            <label class="label pb-3" for="name">Contest Type *</label>
+            <input
+                class="input-text js-input"
+                list="hosting-plan"
+                type="text"
+                name="type"
+                required
+            />
+
+            <datalist id="hosting-plan">
+                <option value="Competitive Challenges"></option>
+                <option value="Hackathons"></option>
+                <option value="Hiring Challenges (Jobs)"></option>
+                <option value="University Challenges"></option>
+            </datalist>
+        </div>
+
+        
+        <div class="container">
+            <div class="row">
+                <div class="form-field col-lg-12">
+                    <div class="form-group">
+                        <label class="label" for="contest_pic">Upload Contest Image *<span style="font-size: 18px;"> (Recommended size: 250 × 150 px)</span> </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row file-upload-box">
+                <div class="form-field col-lg-12">
+                    <div class="form-group files">
+                        <input
+                            type="file"
+                            name="contest_pic"
+                            id="contest_pic"
+                            class="js-input form-control"
+                            required
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-field col-lg-12 file-upload-box">
+            <input class="submit-btn" type="submit" value="Submit" />
+        </div>
+    </form>
+</section>
+
+{% endblock %}

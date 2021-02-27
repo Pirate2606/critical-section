@@ -88,6 +88,52 @@ def contest(category):
                                formatted_date=formatted_date)
 
 
+@app.route('/create_contest', methods=["GET", "POST"])
+@login_required
+def create_contest():
+    contests = Contests()
+    if contests.query.all() is not None:
+        length = len(contests.query.all())
+    else:
+        length = 0
+    if request.method == "POST":
+        file = request.files['contest_pic']
+        if 'contest_pic' in request.files and allowed_file(file.filename):
+            contests.contest_id = length + 1
+            contests.contest_name = request.form["name"]
+            contests.contest_url = request.form["url"]
+            contests.contest_type = request.form["type"]
+            contests.start_date_time = request.form["start"]
+            contests.end_date_time = request.form["end"]
+            contests.contest_status = check_contest_status(request.form["start"], request.form["end"])
+            contests.hosted_on = request.form["hosted"]
+            contests.posted_by = Users.query.filter_by(id=session["user_id"]).first().user_name
+            image_filename = photos.save(file)
+            static = os.path.join(os.path.curdir, "static")
+            pictures = os.path.join(static, "pictures")
+            image_location = os.path.join(pictures, image_filename)
+            with open(image_location, "rb") as file:
+                url = "https://api.imgbb.com/1/upload"
+                payload = {
+                    "key": '00a33d9bbaa2f24bf801c871894e91d4',
+                    "image": base64.b64encode(file.read()),
+                }
+                res = requests.post(url, payload)
+                str_name = ""
+                for r in res:
+                    str_name += r.decode("utf8")
+                contests.contest_pic = json.loads(str_name)['data']['url']
+            db.session.add(contests)
+            db.session.commit()
+        return redirect(url_for("home"))
+    if not session.get('user_id'):
+        return redirect(url_for("signup"))
+    else:
+        user_name = Users.query.filter_by(id=session['user_id']).first().user_name
+        is_admin = Users.query.filter_by(id=session['user_id']).first().is_admin
+        return render_template("register-contest.html", user_name=user_name, is_admin=is_admin)
+
+
 @app.route('/ongoing')
 def ongoing():
     return {"success": True}
