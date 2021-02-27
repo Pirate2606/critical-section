@@ -10,6 +10,23 @@ app = Flask(__name__)
 db = SQLAlchemy()
 
 
+class Contests(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    contest_id = db.Column(db.Integer, unique=True)
+    contest_name = db.Column(db.String(256))
+    contest_url = db.Column(db.String(256))
+    contest_type = db.Column(db.String(256))
+    contest_status = db.Column(db.String(50))
+    contest_pic = db.Column(db.String(50))
+    start_date_time = db.Column(db.String(256))
+    end_date_time = db.Column(db.String(256))
+    hosted_on = db.Column(db.String(256))
+    posted_by = db.Column(db.String(8))
+    posted_on = db.Column(db.DateTime, default=datetime.now())
+    approved = db.Column(db.Boolean(), default=False)
+    cancelled = db.Column(db.Boolean(), default=False)
+
+
 class UsersDashboard(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     unique_id = db.Column(db.String(8), unique=True)

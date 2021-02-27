@@ -5,6 +5,7 @@ import os
 import re
 import string
 import uuid
+from datetime import datetime
 
 import requests
 from flask import render_template, request, redirect, url_for, session, g
@@ -14,7 +15,7 @@ from flask_uploads import UploadSet, configure_uploads, IMAGES
 
 from cli import create_db
 from config import Config
-from models import app, db, Users, login_manager, Register, UsersDashboard
+from models import app, db, Users, login_manager, Register, UsersDashboard, Contests
 from oauth import google, twitter
 
 # Configuration
@@ -39,6 +40,67 @@ os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
 @app.route('/')
 def home():
     return render_template('home.html')
+
+
+@app.route('/contest/<category>')
+def contest(category):
+    contests = Contests().query.all()
+    for con in contests:
+        status = check_contest_status(con.start_date_time, con.end_date_time)
+        if status == con.contest_status:
+            continue
+        else:
+            con.contest_status = status
+            db.session.commit()
+    contest_category = Contests().query.filter_by(contest_status=category, approved=True).all()
+    formatted_date = []
+    for cont in contest_category:
+        if cont.contest_status == "upcoming":
+            dt = cont.start_date_time
+        else:
+            dt = cont.end_date_time
+        end_date = dt.split("T")[0].split('-')
+        month_name = datetime(2020, int(end_date[1]), 1).strftime("%b")
+        date = str(month_name) + ', ' + str(end_date[2]) + " " + str(end_date[0])
+        end_time = dt.split("T")[1]
+        time = str(end_time[:2]) + ":" + str(end_time[3:])
+        formatted_date.append(date + " " + time)
+
+    total_items = len(contest_category)
+    number_of_rows = (total_items // 3) + 1
+    if not session.get('user_id'):
+        return render_template("contests.html",
+                               contests=contest_category,
+                               category=category,
+                               number_of_rows=number_of_rows,
+                               total_items=total_items,
+                               formatted_date=formatted_date)
+    else:
+        user_name = Users.query.filter_by(id=session['user_id']).first().user_name
+        is_admin = Users.query.filter_by(id=session['user_id']).first().is_admin
+        return render_template("contests.html",
+                               contests=contest_category,
+                               category=category,
+                               number_of_rows=number_of_rows,
+                               total_items=total_items,
+                               user_name=user_name,
+                               is_admin=is_admin,
+                               formatted_date=formatted_date)
+
+
+@app.route('/ongoing')
+def ongoing():
+    return {"success": True}
+
+
+@app.route('/upcoming')
+def upcoming():
+    return {"success": True}
+
+
+@app.route('/previous')
+def previous():
+    return {"success": True}
 
 
 @app.route("/check_login")
@@ -232,6 +294,25 @@ def check_password(data):
     else:
         return True
     return False
+
+
+def check_contest_status(start, end):
+    start_date = start.split("T")[0]
+    start_time = start.split("T")[1]
+    end_date = end.split("T")[0]
+    end_time = end.split("T")[1]
+    start_datetime = datetime(int(start_date[0:4]), int(start_date[5:7]), int(start_date[8:]), int(start_time[:2]),
+                              int(start_time[3:]))
+    end_datetime = datetime(int(end_date[0:4]), int(end_date[5:7]), int(end_date[8:]), int(end_time[:2]),
+                            int(end_time[3:]))
+    if start_datetime > end_datetime:
+        return False
+    if datetime.now() < start_datetime:
+        return "upcoming"
+    elif start_datetime < datetime.now() < end_datetime:
+        return "ongoing"
+    elif datetime.now() > end_datetime:
+        return "previous"
 
 
 if __name__ == '__main__':

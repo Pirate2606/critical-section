@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <section>
+        <div class="menu-box pt-2">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="special-menu text-center">
+                            <div class="button-group filter-button-group">
+                                {% if category == "ongoing" %}
+                                    <button onclick="ongoing()" id="coffeeButton" class="active menu-btn">Live</button>
+                                {% else %}
+                                    <button onclick="ongoing()" id="coffeeButton" class="menu-btn">Live</button>
+                                {% endif %}
+
+                                {% if category == "upcoming" %}
+                                    <button onclick="upcoming()" id="teaButton" class="active menu-btn">Upcoming
+                                    </button>
+                                {% else %}
+                                    <button onclick="upcoming()" id="teaButton" class="menu-btn">Upcoming</button>
+                                {% endif %}
+
+                                {% if category == "previous" %}
+                                    <button onclick="previous()" id="smoothieButton" class="active menu-btn">Previous
+                                    </button>
+                                {% else %}
+                                    <button onclick="previous()" id="smoothieButton" class="menu-btn">Previous</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% set i = namespace(value=0) %}
+                {% set count = namespace(value=3) %}
+                {% for _ in range(number_of_rows) %}
+                    <div class="row py-md-4 py-0">
+                        {% for j in range(3) %}
+                            {% set flag = namespace(value=0) %}
+                            {% if i.value < total_items %}
+                                {% if i.value < count.value %}
+                                    <div class="col-md-4 col-12 pb-3">
+                                        <div class="card menu-item" style="width: 20rem">
+                                            <img
+                                                    class="card-img-top pb-2"
+                                                    src="{{ contests[i.value].contest_pic }}"
+                                                    alt="Card image cap"
+                                            />
+                                            <h5
+                                                    style="font-size: 15px; line-height: 30px;text-transform: uppercase;color: #343B40;"
+                                                    class="card-title text-center"
+                                            >
+                                                {{ contests[i.value].hosted_on }}
+                                            </h5>
+                                            <ul class="list-group list-group-flush">
+                                                <li
+                                                        style="background-color: #fff;color: #000;font-weight: 600; font-size:20px;"
+                                                        class="list-group-item text-center"
+                                                >
+                                                    <div style="font-size: 15px;color: #343B40; ">NAME</div>
+                                                    <div>{{ contests[i.value].contest_name }}</div>
+                                                </li>
+                                                <li
+                                                        style="
+                                                        background-color: #fff;
+                                                        color: #000;
+                                                        font-weight: 600;"
+                                                        class="list-group-item text-center"
+                                                >
+                                                    {% if category == 'ongoing' %}
+                                                        <div style="font-size: 15px;color: #343B40; ">ENDS IN</div>
+                                                        <div style="font-size: 17px;" id="timer{{ i.value }}">{{ formatted_date[i.value] }}</div>
+                                                    {% elif category == 'upcoming' %}
+                                                        <div style="font-size: 15px;color: #343B40;">STARTS ON</div>
+                                                        <div style="font-size: 17px;">{{ formatted_date[i.value] }}</div>
+                                                    {% else %}
+                                                        <div style="font-size: 15px;color: #343B40;">ENDED ON</div>
+                                                        <div style="font-size: 17px;">{{ formatted_date[i.value] }}</div>
+                                                    {% endif %}
+                                                </li>
+                                                <li
+                                                        style="
+                                                        background-color: #fff;
+                                                        color: #000;
+                                                        font-weight: 600;"
+                                                        class="list-group-item text-center"
+                                                >
+                                                    <div style="font-size: 15px; color: #343B40;">POSTED BY</div>
+                                                    <div style="font-size: 17px;">{{ contests[i.value].posted_by }}</div>
+                                                </li>
+                                            </ul>
+                                            {% if category == "previous" %}
+                                            {% else %}
+                                                <div class="card-body text-center p-3">
+                                                    <a href="{{ contests[i.value].contest_url }}" class="btn btn-primary order-btn"
+                                                    >Register</a
+                                                    >
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% set i.value = i.value + 1 %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        {% set count.value = i.value * 2 %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
