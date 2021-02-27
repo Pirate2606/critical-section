@@ -2,3 +2,132 @@ html,
 body {
     overflow-x: hidden;
 }
+
+
+/* HOME PAGE GALLERY STARTS */
+
+.qualities h2 {
+    font-weight: 800;
+    font-size: 18px;
+    color: #1d1f21;
+    line-height: 22px;
+}
+
+.qualities h3 {
+    font-weight: 800;
+    /* font-size: 18px; */
+    color: #1d1f21;
+    line-height: 40px;
+}
+
+.qualities p {
+    font-weight: 400;
+    font-size: 15px;
+    color: #1d1f21;
+    line-height: 22px;
+    text-align: justify;
+}
+
+.quality-img {
+    width: 400px;
+}
+
+.scroll-for-more {
+    color: #1d1f21;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 22px;
+}
+
+.promotion h2 {
+    color: #1d1f21 !important;
+    font-size: 32px;
+    line-height: 40px;
+    font-weight: 800;
+}
+
+.promotion h4 {
+    color: #1d1f21 !important;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 500;
+}
+
+.headers {
+    font-weight: 800;
+    font-size: 30px;
+    line-height: 32px;
+    color: #1d1f21 !important;
+}
+
+.critical101desc p {
+    font-weight: 500;
+    font-size: 18px;
+    color: #1d1f21;
+}
+
+.critical101-img {
+    width: 350px;
+    border-radius: 5%;
+}
+
+.home-gif {
+    filter: drop-shadow(0 0 0.75rem #1d1f21);
+    width: 300px;
+}
+
+.critical101-btn {
+    background-color: #09f;
+    color: #fff !important;
+    font-size: 17px;
+    width: 170px;
+    border-radius: 8px;
+    border: none;
+    line-height: 35px;
+    font-weight: 500;
+}
+
+/*------------------------------------------------------------------
+    Contact info
+-------------------------------------------------------------------*/
+
+.contact-imfo-box {
+    background-color: #fefefe;
+    padding: 30px 0;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.contact-imfo-box i {
+    display: block;
+    float: left;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    background: #1d1919;
+    color: #09f;
+    font-size: 30px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.contact-imfo-box h4 {
+    margin: 5px 0px 0px;
+    color: #ffffff;
+    font-size: 20px;
+    padding: 0px;
+    font-weight: 500;
+    line-height: 24px;
+}
+
+.contact-imfo-box p {
+    margin: 0px;
+    color: #ffffff;
+    font-weight: 300;
+}
