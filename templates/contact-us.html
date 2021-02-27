@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <body style="background: -webkit-linear-gradient(left, #3931af, #00c6ff);">
+    <div class="container contact-us-form">
+        <div class="contact-image">
+            <img
+                    style="border-radius: 50%;"
+                    src="{{ url_for('static', filename='images/contact.png') }}"
+                    alt="rocket_contact"
+            />
+        </div>
+        <form method="POST">
+            <h3>Drop Us a Message</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input
+                                type="text"
+                                name="txtName"
+                                class="form-control"
+                                placeholder="Name *"
+                                required
+                        />
+                    </div>
+                    <div class="form-group">
+                        <input
+                                type="text"
+                                name="txtEmail"
+                                class="form-control"
+                                placeholder="Email *"
+                                required
+                        />
+                    </div>
+                    <div class="form-group">
+                        <input
+                                type="text"
+                                name="txtPhone"
+                                class="form-control"
+                                placeholder="Phone Number *"
+                                required
+                        />
+                    </div>
+                    <div class="form-group">
+                        <input
+                                type="submit"
+                                name="btnSubmit"
+                                class="btnContact"
+                                value="Send Message"
+                        />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <textarea
+                                name="txtMsg"
+                                class="form-control"
+                                placeholder="Message *"
+                                style="width: 100%; height: 150px"
+                                required
+                        ></textarea>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Start Contact info -->
+    <section>
+        <div class="contact-imfo-box">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 py-2 py-lg-0">
+                        <i class="fa fa-volume-control-phone"></i>
+                        <div class="overflow-hidden">
+                            <h4 style="color: #1d1f21; font-weight: 700">Phone</h4>
+                            <p
+                                    style="color: #1d1f21; font-weight: 500"
+                                    class="lead"
+                            >
+                                +91 123-456-4590
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 py-4 py-lg-0">
+                        <i class="fa fa-envelope"></i>
+                        <div class="overflow-hidden">
+                            <h4 style="color: #1d1f21; font-weight: 700">Email</h4>
+                            <p
+                                    style="color: #1d1f21; font-weight: 500"
+                                    class="lead"
+                            >
+                                critical.section42@gmail.com
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 py-2 py-lg-0">
+                        <i class="fa fa-map-marker"></i>
+                        <div class="overflow-hidden">
+                            <h4 style="color: #1d1f21; font-weight: 700">
+                                Location
+                            </h4>
+                            <p
+                                    style="color: #1d1f21; font-weight: 500"
+                                    class="lead"
+                            >
+                                xyz, XYZ, India
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    </body>
+
+{% endblock %}

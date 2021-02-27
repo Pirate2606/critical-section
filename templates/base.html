@@ -82,7 +82,7 @@
                         style="font-size: 21px"
                         class="nav-item active mx-3"
                 >
-                    <a class="nav-link" href=""
+                    <a class="nav-link" href="{{ url_for('contact_us') }}"
                     >Contact
                         <span class="sr-only">(current)</span></a
                     >
@@ -91,7 +91,7 @@
                         style="font-size: 21px"
                         class="nav-item active mx-3"
                 >
-                    <a class="nav-link" href=""
+                    <a class="nav-link" href="{{ url_for('about_us') }}"
                     >About
                         <span class="sr-only">(current)</span></a
                     >
@@ -102,7 +102,7 @@
                     <form class="form-inline mt-2 mt-md-0 pr-md-5 mr-md-5">
                         <a style="text-decoration: none;font-size: 20px;"
                            class="pr-3 login"
-                           href=""
+                           href="{{ url_for('create_contest') }}"
                         >Add contest</a>
                         <ul class="navbar-nav">
                             <div class="dropdown">

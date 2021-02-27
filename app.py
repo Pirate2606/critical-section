@@ -8,7 +8,7 @@ import uuid
 from datetime import datetime
 
 import requests
-from flask import render_template, request, redirect, url_for, session, g
+from flask import render_template, request, redirect, url_for, session, g, abort
 from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.routing import ValidationError
 from flask_uploads import UploadSet, configure_uploads, IMAGES
@@ -19,6 +19,8 @@ from models import app, db, Users, login_manager, Register, UsersDashboard, Cont
 from oauth import google, twitter
 
 # Configuration
+from sendMail import send_mail, send_approval_mail
+
 app.config.from_object(Config)
 app.cli.add_command(create_db)
 app.register_blueprint(google.blueprint, url_prefix="/login")
@@ -125,6 +127,7 @@ def create_contest():
                 contests.contest_pic = json.loads(str_name)['data']['url']
             db.session.add(contests)
             db.session.commit()
+            send_approval_mail()
         return redirect(url_for("home"))
     if not session.get('user_id'):
         return redirect(url_for("signup"))
@@ -305,6 +308,34 @@ def page_not_found(error):
 @app.errorhandler(403)
 def restricted(error):
     return render_template('403.html'), 403
+
+
+@app.route('/contact_us', methods=["GET", "POST"])
+def contact_us():
+    if request.method == "POST":
+        name = request.form['txtName']
+        email = request.form['txtEmail']
+        phone = request.form['txtPhone']
+        msg = request.form['txtMsg']
+        send_mail(name, email, phone, msg)
+    if not session.get('user_id'):
+        return render_template('contact-us.html')
+    else:
+        return render_template('contact-us.html',
+                               user_name=Users.query.filter_by(id=session['user_id']).first().user_name,
+                               unique_id=Users.query.filter_by(id=session.get('user_id')).first().unique_id,
+                               is_admin=Users.query.filter_by(id=session.get('user_id')).first().is_admin)
+
+
+@app.route('/about_us')
+def about_us():
+    if not session.get('user_id'):
+        return render_template('about-us.html')
+    else:
+        return render_template('about-us.html',
+                               user_name=Users.query.filter_by(id=session['user_id']).first().user_name,
+                               unique_id=Users.query.filter_by(id=session.get('user_id')).first().unique_id,
+                               is_admin=Users.query.filter_by(id=session.get('user_id')).first().is_admin)
 
 
 # Functions
