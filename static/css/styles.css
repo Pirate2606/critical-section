@@ -1078,3 +1078,78 @@ input[type=datetime-local]:focus::-webkit-datetime-edit {
     bottom: 0;
     width: 100%;
 }
+
+
+/*------------------------------------------------------------------
+    Customer Reviews
+-------------------------------------------------------------------*/
+
+.customer-reviews-box {
+    padding: 70px 0px;
+}
+
+.carousel-inner .carousel-item .img-box {
+    width: 135px;
+    height: 135px;
+}
+
+.carousel-control-prev {
+    left: -100px;
+}
+
+.carousel-control-next {
+    right: -100px;
+}
+
+@media (max-width: 992px) {
+    .carousel-indicators {
+        visibility: hidden;
+    }
+}
+
+.text-warning {
+    color: #fff !important;
+    font-size: 24px;
+}
+
+@media (min-width: 320px) and (max-width: 640px) {
+    .carousel-inner .carousel-item p {
+        font-size: 14px;
+    }
+
+    .carousel-control-prev {
+        left: -20px;
+    }
+
+    .carousel-control-next {
+        right: -20px;
+    }
+
+    .carousel-indicators {
+        top: 400px;
+    }
+}
+
+#reviews .carousel-control-prev {
+    background: #09f;
+    color: #fff;
+    display: block;
+    position: absolute;
+    width: 8%;
+    height: 50px;
+    top: 50%;
+    font-size: 28px;
+    opacity: 1;
+}
+
+#reviews .carousel-control-next {
+    background: #09f;
+    color: #fff;
+    display: block;
+    position: absolute;
+    width: 8%;
+    height: 50px;
+    top: 50%;
+    font-size: 28px;
+    opacity: 1;
+}
