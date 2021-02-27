@@ -1,24 +1,35 @@
+import base64
+import csv
+import json
 import os
 import re
 import string
 import uuid
 
+import requests
 from flask import render_template, request, redirect, url_for, session, g
-from flask_login import login_user, login_required, current_user
+from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.routing import ValidationError
+from flask_uploads import UploadSet, configure_uploads, IMAGES
 
 from cli import create_db
 from config import Config
-from models import app, db, Users, login_manager, Register
+from models import app, db, Users, login_manager, Register, UsersDashboard
 from oauth import google, twitter
 
-
+# Configuration
 app.config.from_object(Config)
 app.cli.add_command(create_db)
 app.register_blueprint(google.blueprint, url_prefix="/login")
 app.register_blueprint(twitter.blueprint, url_prefix="/login")
 db.init_app(app)
 login_manager.init_app(app)
+
+# Upload Photos
+photos = UploadSet('photos', IMAGES)
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+app.config['UPLOADED_PHOTOS_DEST'] = 'static/pictures'
+configure_uploads(app, photos)
 
 # enabling insecure login for OAuth login
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -103,6 +114,81 @@ def sign_in():
     return render_template('sign-in.html', flag=flag)
 
 
+@app.route('/<unique_id>/registration', methods=["GET", "POST"])
+@login_required
+def registration(unique_id):
+    register = Register()
+    email = Users.query.filter_by(unique_id=unique_id).first().email
+    static = os.path.join(os.path.curdir, "static")
+    pictures = os.path.join(static, "data")
+    country_location = os.path.join(pictures, "countries.csv")
+    univ_location = os.path.join(pictures, "universities.csv")
+    name = []
+    temp = []
+    univ = []
+    with open(country_location) as f:
+        csv_reader = csv.reader(f)
+        for c in csv_reader:
+            temp.append(c)
+    for country in temp[1:]:
+        name.append(country[0])
+    temp = []
+    with open(univ_location, encoding="utf8") as f:
+        csv_reader = csv.reader(f)
+        for c in csv_reader:
+            temp.append(c)
+    for u in temp[1:]:
+        univ.append(u[1])
+    if request.method == "POST":
+        file = request.files['profile_pic']
+        if 'profile_pic' in request.files and allowed_file(file.filename):
+            image_filename = photos.save(file)
+            static = os.path.join(os.path.curdir, "static")
+            pictures = os.path.join(static, "pictures")
+            image_location = os.path.join(pictures, image_filename)
+            with open(image_location, "rb") as file:
+                url = "https://api.imgbb.com/1/upload"
+                payload = {
+                    "key": '00a33d9bbaa2f24bf801c871894e91d4',
+                    "image": base64.b64encode(file.read()),
+                }
+                res = requests.post(url, payload)
+                str_name = ""
+                for r in res:
+                    str_name += r.decode("utf8")
+                register.profile_pic = json.loads(str_name)['data']['url']
+        else:
+            register.profile_pic = "https://i.ibb.co/8mq8Tfh/default.jpg"
+        register.unique_id = unique_id
+        register.first_name = request.form["first_name"]
+        register.last_name = request.form["last_name"]
+        register.email = email
+        register.mobile_num = request.form["phone_num"]
+        register.country = request.form["country"]
+        if request.form["college"]:
+            register.university_name = request.form["college"]
+        if request.form["employment"] == "student":
+            register.profession = request.form["employment"]
+            register.graduation_year = request.form["year"]
+        else:
+            register.profession = request.form["employment"]
+            register.experience = request.form["year"]
+            register.graduation_year = "2000"
+        dashboard = UsersDashboard(unique_id=unique_id)
+        db.session.add_all([register, dashboard])
+        db.session.commit()
+        return redirect(url_for("home"))
+    return render_template("registration.html", email=email, name=name, univ=univ)
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    session.pop('user_id', None)
+    logout_user()
+    return redirect(url_for("home"))
+
+
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('404.html'), 404
@@ -114,6 +200,10 @@ def restricted(error):
 
 
 # Functions
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 def check_mail(data):
     if Users.query.filter_by(email=data).first():
         raise ValidationError('Your email is already registered.')

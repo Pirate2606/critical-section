@@ -60,7 +60,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div
-                class="collapse navbar-collapse pl-md-2"
+                class="collapse navbar-collapse pl-md-5"
                 id="navbarCollapse"
         >
             <ul class="navbar-nav mr-auto">
@@ -96,20 +96,53 @@
                 </li>
             </ul>
             <div>
-                <form class="form-inline mt-2 mt-md-0 pr-md-5 mr-md-5">
-                    <a
-                            style="text-decoration: none;font-size: 20px;"
-                            class="pr-5 login"
-                            href="{{ url_for("sign_in") }}"
-                    >Log in</a
-                    >
-                    <a
-                            style="text-decoration: none;font-size: 20px;"
-                            class="pr-5 signup"
-                            href="{{ url_for("signup") }}"
-                    >Sign up</a
-                    >
-                </form>
+                {% if current_user.is_authenticated %}
+                    <form class="form-inline mt-2 mt-md-0 pr-md-5 mr-md-5">
+                        <a style="text-decoration: none;font-size: 20px;"
+                           class="pr-3 login"
+                           href=""
+                        >Add contest</a>
+                        <ul class="navbar-nav">
+                            <div class="dropdown">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link" href="#" id="dropdown01"
+                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <div style="text-decoration: none; font-size: 20px" class="test">
+                                                <span class="login">
+                                                    Account
+                                                </span>
+
+                                            <i class="fas fa-caret-down login"></i>
+                                        </div>
+                                    </a>
+
+                                    <div style="background-color: #fff;" class="dropdown-menu"
+                                         aria-labelledby="dropdown01">
+                                        <a style="width: 150px;" class="dropdown-item user-dropdown"
+                                           href="">Profile</a>
+                                        <a style="width: 150px;" class="dropdown-item user-dropdown"
+                                           href="{{ url_for('logout') }}">Log out</a>
+                                    </div>
+                                </li>
+                            </div>
+                        </ul>
+                    </form>
+                {% else %}
+                    <form class="form-inline mt-2 mt-md-0 pr-md-5 mr-md-5">
+                        <a
+                                style="text-decoration: none;font-size: 20px;"
+                                class="pr-5 login"
+                                href="{{ url_for('sign_in') }}"
+                        >Log in</a
+                        >
+                        <a
+                                style="text-decoration: none;font-size: 20px;"
+                                class="pr-5 signup"
+                                href="{{ url_for('signup') }}"
+                        >Sign up</a
+                        >
+                    </form>
+                {% endif %}
             </div>
         </div>
     </nav>

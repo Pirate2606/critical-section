@@ -10,6 +10,13 @@ app = Flask(__name__)
 db = SQLAlchemy()
 
 
+class UsersDashboard(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    unique_id = db.Column(db.String(8), unique=True)
+    points = db.Column(db.Integer, default=200)
+    contest_posted = db.Column(db.Integer, default=0)
+
+
 class Register(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     unique_id = db.Column(db.String(8), unique=True)
